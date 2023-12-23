@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +22,48 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+
+Route::redirect('/', '/dashboard');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware(['guest'])
+    ->name('login');
+
+Route::middleware('guest')->controller(AuthController::class)
+    ->name('login.')
+    ->group(function () {
+        Route::get('/admin/login', 'index')->name('form');
+        Route::post('/admin/login', 'process')->name('process');
+    });
+
+Route::group(['middleware' => 'auth'], function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::controller(ProfileController::class)->group(function() {
+            Route::get('/my-profile', 'index')->name('profile');
+            Route::put('/my-profile/update', 'update')->name('profile.update');
+            Route::patch('/my-profile/update-password', 'updatePassword')->name('profile.update-password');
+        });
+
+        Route::group(['middleware' => 'role:admin,operator'], function () {
+            Route::group(['prefix' => '/master-data'], function () {
+                Route::name('master-data.')->group(function () {
+                    Route::resource('subject', SubjectController::class);
+                    Route::resource('student', StudentController::class);
+                    Route::resource('class', KelasController::class);
+                    Route::resource('teacher', TeacherController::class);
+                });
+            });
+            Route::group(['prefix' => '/academics'], function () {
+                Route::name('academics.')->group(function () {
+                    Route::resource('grade', GradeController::class);
+                });
+            });
+        });
+
+        Route::group(['middleware' => 'role:admin'], function () {
+            Route::patch('/manage-users/{id}/update-password', [UsersController::class, 'updatePassword'])
+                ->name('manage-users.update-password');
+            Route::resource('manage-users', UsersController::class);
+        });
+    });
