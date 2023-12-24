@@ -16,11 +16,15 @@ class AuthController extends Controller
     function process(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required'
+            'email' => 'required|email|exists:users',
+            'password' => 'required|min:8'
         ]);
 
-        Auth::attempt($request->except('_token'));
+        $loggedin = Auth::attempt($request->except('_token'));
+        if (!$loggedin) {
+            return redirect(route('login.form'))
+                ->with('error', 'Email atau Password kamu salah!');
+        }
         return redirect(route('dashboard'));
     }
 }

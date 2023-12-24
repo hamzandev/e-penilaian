@@ -1,11 +1,18 @@
 <x-app-layout title="Home">
     <div class="row">
         <form method="POST" action="{{ route('login.process') }}" class="col-md-5 mx-auto">
+            @if (Session::has('message'))
+                <x-alert type="success" message="{{ Session::get('message') }}" />
+            @elseif(Session::has('error'))
+                <x-alert type="error" message="{{ Session::get('error') }}" />
+            @endif
+
             @csrf
             <fieldset class="form-fieldset p-5 mt-4 shadow-lg" style="border-radius: 12px;">
                 <div class="m-md-3">
                     <h1 class="text-center">Welcome, Admin!</h1>
-                    <p class="text-secondary text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis doloribus
+                    <p class="text-secondary text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
+                        doloribus
                         dolorum quisquam!</p>
                     {{-- <div class="input-icon mb-3">
                         <span class="input-icon-addon">

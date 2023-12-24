@@ -9,13 +9,22 @@ class Teacher extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'nuptk', 'user_id', 'name', 'dob', 'gender', 'address',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function grades()
+    public function grade()
     {
         return $this->hasMany(Grade::class);
+    }
+
+    public function study()
+    {
+        return $this->hasMany(Study::class);
     }
 }

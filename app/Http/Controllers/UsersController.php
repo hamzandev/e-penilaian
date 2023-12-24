@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class UsersController extends Controller
 {
@@ -13,31 +15,35 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::select('name', 'email', 'role')->whereNot('id', Auth::user()->id)->get();
+        // $users = User::with('teacher', function($query) {
+        //     $query->whereNotNull('user_id');
+        // })->whereNot('id', Auth::user()->id)->get();
         // $users = User::select('id', 'name', 'email', 'role')->get();
+        $users = User::whereNotIn('id', [Auth::user()->id])
+            ->whereHas('teacher', function ($query) {
+                $query->whereNotNull('user_id');
+            })
+            ->with('teacher')
+            ->get();
+
         return view('backend.admin.users.index', compact('users'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $gender = ['L', 'P'];
-        $role = ['admin', 'operator'];
-        return view('backend.admin.users.create', compact('gender', 'role'));
-    }
+    // public function create()
+    // {
+    //     $gender = ['L', 'P'];
+    //     $role = ['admin', 'operator'];
+    //     return view('backend.admin.users.create', compact('gender', 'role'));
+    // }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
-            'gender' => 'required|in:L,P',
-            'dob' => 'required|date|before_or_equal:today',
             'role' => 'nullable|in:admin,operator',
             'password' => 'nullable|min:8',
         ]);
@@ -60,14 +66,13 @@ class UsersController extends Controller
             return redirect(route('manage-users.index'))
                 ->with('error', 'Terjadi kesalahan pada sistem. Silahkan coba lagi nanti! ');
         }
-        // return dd($data);
     }
 
 
     public function edit(string $id)
     {
-        $user = User::find($id);
-        // return dd($user);
+        // $user = User::find($id);
+        $user = User::with('teacher')->find($id);
         if (!$user) {
             return redirect(route('manage-users.index'))
                 ->with('error', 'Data Pengguna tidak ditemukan! ');
@@ -77,21 +82,23 @@ class UsersController extends Controller
         return view('backend.admin.users.edit', compact('user', 'gender', 'role'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => 'required|string|min:2',
             'email' => 'required|email',
-            'gender' => 'required|in:L,P',
-            'dob' => 'nullable|date|before_or_equal:today',
             'role' => 'required|in:admin,operator',
             'password' => 'nullable|min:8',
         ]);
 
-        $find = User::select('id', 'email')->find($id);
+        // return dd($request->all());
+
+        if (!$request->name || !$request->dob || !$request->gender || !$request->address) {
+            $find = User::find($id);
+        } else {
+            $find = User::with('teacher')->find($id);
+        }
+
         if (!$find) {
             return redirect(route('manage-users.index'))
                 ->with('error', 'Data Pengguna tidak ditemukan!');
@@ -105,12 +112,15 @@ class UsersController extends Controller
             }
         }
 
-        $find->name = $request->post('name');
-        $find->email = $request->post('email');
-        $find->gender = $request->post('gender');
-        $find->role = $request->post('role');
-        if ($request->post('dob')) {
-            $find->dob = $request->post('dob');
+        $find->email = $request->email;
+        $find->role = $request->role;
+        if ($request->name || $request->dob || $request->gender || $request->address) {
+            $find->teacher->name = $request->name;
+            $find->teacher->gender = $request->gender;
+            if ($request->dob) {
+                $find->teacher->dob = $request->dob;
+            }
+            $find->teacher->save();
         }
         $find->save();
 
@@ -120,33 +130,75 @@ class UsersController extends Controller
     }
 
 
-    public function destroy(string $id)
-    {
-        $find = User::select('id', 'email')->find($id);
-        if (!$find) {
-            return redirect(route('manage-users.index'))
-                ->with('error', 'Data Pengguna tidak ditemukan!');
-        }
+    // public function destroy(string $id)
+    // {
+    //     $find = User::select('id')->find($id);
+    //     $teacher = Teacher::whereUserId($id)->first();
+    //     // return dd($find);
 
-        $find->delete();
-        return redirect(route('manage-users.index'))
-            ->with('message', 'Data Pengguna ' . $find->email . ' berhasil dihapus!');
+    //     if (!$find) {
+    //         return redirect(route('manage-users.index'))
+    //             ->with('error', 'Data Pengguna tidak ditemukan!');
+    //     }
+    //     if (!$teacher) {
+    //         $find->delete();
+    //         return redirect(route('manage-users.index'))
+    //             ->with('info', 'Akun telah terhapus. Tidak ada Guru manapun yang terkait dengan akun ini!');
+    //     }
+
+    //     $teacher->user_id = NULL;
+    //     $teacher->save();
+    //     $find->delete();
+
+    //     return redirect(route('manage-users.index'))
+    //         ->with('message', 'Data Pengguna ' . $find->email . ' berhasil dihapus!');
+    // }
+
+
+    function connectAccount($id)
+    {
+        $teacher = Teacher::select('id', 'name', 'nuptk')->find($id);
+        $users = User::select('id', 'role', 'email')->whereNot('id', auth()->user()->id)->get();
+        return view('backend.admin.users.connect-account', compact('teacher', 'users'));
+    }
+
+    function connect(Request $request, $id)
+    {
+
+        // return dd($request->all());
+        $request->validate([
+            'user_id' => 'numeric|required|not_in:0',
+        ]);
+
+        $teacher = Teacher::find($id);
+        if (!$teacher) {
+            return redirect(route('manage-users.connect-account', $id))
+                ->with('error', 'Data Guru yang kamu coba kaitkan tidak ditemukan!');
+        }
+        $teacher->user_id = $request->user_id;
+        $teacher->save();
+        return redirect(route('manage-users.index', $id))
+            ->with('message', 'Data Guru berhasil terkait dengan akun : ' . $request->email . '');
     }
 
     function updatePassword(Request $request, string $id)
     {
+        // $find = User::with('teacher')->find($id);
+        // return dd($find);
+
         $request->validate([
             'password' => 'required|min:8'
         ]);
 
         $find = User::select('id', 'email')->find($id);
+
         if (!$find) {
-            return redirect(route('manage-users.index'))
+            return redirect(route('accounts.index'))
                 ->with('error', 'Data Pengguna tidak ditemukan!');
         }
         $find->password = $request->password;
         $find->save();
-        return redirect(route('manage-users.index'))
+        return redirect(route('accounts.edit', $find->id))
             ->with('message', 'Password pengguna ' . $find->email . ' berhasil diperbarui. PASSWORD BARU : ' . $request->password);
     }
 }

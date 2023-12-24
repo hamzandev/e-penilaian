@@ -11,7 +11,11 @@ class Subject extends Model
 
     use HasFactory;
 
-    function Grade() {
+    function grade() {
         return $this->hasMany(Grade::class);
+    }
+
+    function study() {
+        return $this->hasMany(Study::class);
     }
 }

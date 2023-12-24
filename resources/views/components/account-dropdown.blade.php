@@ -5,7 +5,7 @@
         <span class="avatar avatar-sm"
             style="background-image: url({{ Session::get('user')[0]->avatar ?? asset('assets/img/avatar.jpg') }})"></span>
         <div class="d-none d-xl-block pe-2 text-end">
-            <div>{{ Auth::user()->name ?? "User" }}</div>
+            <div>{{ Auth::user()->teacher->name ?? "User" }}</div>
             <div class="mt-1 small text-secondary">{{ Auth::user()->email ?? "email" }}</div>
         </div>
     </a>

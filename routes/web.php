@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GradeController;
@@ -38,32 +39,47 @@ Route::middleware('guest')->controller(AuthController::class)
     });
 
 Route::group(['middleware' => 'auth'], function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::controller(ProfileController::class)->group(function() {
-            Route::get('/my-profile', 'index')->name('profile');
-            Route::put('/my-profile/update', 'update')->name('profile.update');
-            Route::patch('/my-profile/update-password', 'updatePassword')->name('profile.update-password');
-        });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/my-profile', 'index')->name('profile');
+        Route::put('/my-profile/update', 'update')->name('profile.update');
+        Route::patch('/my-profile/update-password', 'updatePassword')->name('profile.update-password');
+    });
 
-        Route::group(['middleware' => 'role:admin,operator'], function () {
-            Route::group(['prefix' => '/master-data'], function () {
-                Route::name('master-data.')->group(function () {
-                    Route::resource('subject', SubjectController::class);
-                    Route::resource('student', StudentController::class);
-                    Route::resource('class', KelasController::class);
-                    Route::resource('teacher', TeacherController::class);
-                });
-            });
-            Route::group(['prefix' => '/academics'], function () {
-                Route::name('academics.')->group(function () {
-                    Route::resource('grade', GradeController::class);
-                });
+    Route::group(['middleware' => 'role:admin,operator'], function () {
+        Route::group(['prefix' => '/master-data'], function () {
+            Route::name('master-data.')->group(function () {
+                Route::resource('subject', SubjectController::class)->except('show');
+                Route::resource('student', StudentController::class)->except('show');
+                Route::resource('class', KelasController::class)->except('show');
+                // Route::resource('teacher', TeacherController::class);
             });
         });
-
-        Route::group(['middleware' => 'role:admin'], function () {
-            Route::patch('/manage-users/{id}/update-password', [UsersController::class, 'updatePassword'])
-                ->name('manage-users.update-password');
-            Route::resource('manage-users', UsersController::class);
+        Route::group(['prefix' => '/academics'], function () {
+            Route::name('academics.')->group(function () {
+                Route::resource('grade', GradeController::class);
+            });
         });
     });
+
+    Route::group(['middleware' => 'role:admin'], function () {
+        Route::get('/manage-users/{id}/connect-account', [UsersController::class, 'connectAccount'])
+            ->name('manage-users.connect-account');
+        Route::patch('/manage-users/{id}/connect-account', [UsersController::class, 'connect'])
+            ->name('manage-users.connect-account-action');
+
+        Route::patch('/accounts/{id}/update-password', [AccountsController::class, 'updatePassword'])
+            ->name('accounts.update-password');
+
+        Route::patch('/manage-users/{id}/update-password', [UsersController::class, 'updatePassword'])
+            ->name('manage-users.update-password');
+
+        Route::resource('manage-users', UsersController::class)->except(['create', 'show', 'destroy']);
+        Route::resource('accounts', AccountsController::class);
+
+        Route::name('master-data.')->prefix('/master-data')->group(function() {
+            Route::resource('teacher', TeacherController::class);
+        });
+
+    });
+});
