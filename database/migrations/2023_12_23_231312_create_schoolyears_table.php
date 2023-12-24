@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schoolyear', function (Blueprint $table) {
+        Schema::create('schoolyears', function (Blueprint $table) {
             $table->id();
-            $table->year('start_date');
-            $table->year('end_date');
-            $table->enum('semester_type', ['gasal', 'genap']);
+            $table->year('start_year');
+            $table->year('end_year');
+            $table->enum('semester_type', [['gasal', 'genap']]);
             $table->text('description')->nullable();
             $table->timestamps();
         });

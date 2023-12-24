@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('schoolyear_id');
-            $table->integer('teacher_id');
+            $table->integer('teacher_id')->nullable(); //kelas bisa jadi belum ditetapkan walikelasnya
             $table->integer('kelas_level_id');
             $table->timestamps();
         });

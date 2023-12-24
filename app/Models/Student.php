@@ -29,4 +29,24 @@ class Student extends Model
     {
         return $this->hasMany(Grade::class);
     }
+
+    public function achievement()
+    {
+        return $this->hasMany(Achievement::class);
+    }
+
+    public function finalValue()
+    {
+        return $this->hasMany(FinalValue::class);
+    }
+
+    public function behaviorValue()
+    {
+        return $this->hasMany(BehaviorValue::class);
+    }
+
+    public function precense()
+    {
+        return $this->hasMany(Precense::class);
+    }
 }

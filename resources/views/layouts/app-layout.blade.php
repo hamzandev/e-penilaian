@@ -39,6 +39,7 @@
             <x-footer></x-footer>
         </div>
     </div>
+
     {{-- Logout modal --}}
     <div class="modal modal-blur fade" id="modal-small" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
