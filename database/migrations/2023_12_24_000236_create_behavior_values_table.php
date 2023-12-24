@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kelas', function (Blueprint $table) {
+        Schema::create('behavior_values', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->integer('student_id');
+            $table->enum('predicate', ['A','B', 'C', 'D', 'E']);
+            $table->string('behavior_type');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kelas');
+        Schema::dropIfExists('behavior_values');
     }
 };
