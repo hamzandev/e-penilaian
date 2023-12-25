@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Study extends Model
 {
+
     use HasFactory;
+      
+    protected $fillable = ['kelas_id', 'subject_id', 'teacher_id', 'standard'];
 
     function kelas()
     {
