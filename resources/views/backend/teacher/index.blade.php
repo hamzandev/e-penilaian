@@ -1,5 +1,5 @@
-<x-app-layout title="Guru">
-    <div class="col-md-7 ">
+<x-app-layout title="Guru & Staff">
+    <div class="col-md-9">
         @if (Session::has('message') && !Session::has('info'))
             <x-alert type="success" message="{{ Session::get('message') }}" />
         @elseif(Session::has('info') && Session::has('message'))
@@ -13,16 +13,35 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-baseline">
-                        <h1>Guru</h1>
-                        <a href="{{ route('master-data.teacher.create') }}" class="btn btn-primary"><svg
-                                xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus"
-                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                                <path d="M9 12h6" />
-                                <path d="M12 9v6" />
-                            </svg>Tambah Guru</a>
+                        <h1>Guru & Staff</h1>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('master-data.teacher.create') }}" class="btn btn-primary"><svg
+                                    xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                    <path d="M9 12h6" />
+                                    <path d="M12 9v6" />
+                                </svg>
+                                Tambah Guru
+                            </a>
+                            <button data-bs-toggle="modal" data-bs-target="#import-teacher" class="btn btn-success">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="icon icon-tabler icon-tabler-file-spreadsheet" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                    <path d="M8 11h8v7h-8z" />
+                                    <path d="M8 15h8" />
+                                    <path d="M11 11v7" />
+                                </svg>
+                                Import Guru
+                            </button>
+                        </div>
+
                     </div>
                     <div class="card-body">
                         <table id="datatable" class="table card-table table-striped">
@@ -39,7 +58,10 @@
                                 @foreach ($teacher as $i => $k)
                                     <tr>
                                         <td>{{ ++$i }}</td>
-                                        <td>{{ $k->name }}</td>
+                                        <td>{{ $k->name }} @if ($k->id == auth()->user()->id)
+                                                <i class="text-secondary">(Anda)</i>
+                                            @endif
+                                        </td>
                                         <td>{{ $k->nuptk ?? '-' }}</td>
                                         <td>
                                             @if ($k->user_id)
@@ -93,4 +115,50 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal import file --}}
+    <div class="modal modal-blur fade" id="import-teacher" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <form method="POST" enctype="multipart/form-data" action="{{ route('master-data.teacher.import') }}"
+                class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h3>Import Data Siswa dengan file Excel</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <span class="text-info">INFO : Pastikan kamu sudah menyiapkan file excel kamu. Jika kamu belum punya, Silahkan download template Tabel Excel berikut</span>
+                    </div>
+                    <div class="mb-4 d-grid">
+                        <a href="{{ asset('assets/excel-templates/template-teacher.xlsx') }}" class="btn btn-primary" style="width: min-content;">
+                            Download Template
+                        </a>
+                    </div>
+                    <div>
+                        <div class="my-3">
+                            <label for="file_excel" class="form-label">Upload File Excel</label>
+                            <input type="file" name="file_excel" id="file_excel" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload"
+                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                            <path d="M7 9l5 -5l5 5" />
+                            <path d="M12 4l0 12" />
+                        </svg>
+                        Upload
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </x-app-layout>

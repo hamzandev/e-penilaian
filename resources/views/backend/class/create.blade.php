@@ -24,13 +24,45 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label class="form-label" for="name">Kelas</label>
+                                    <label class="form-label" for="name">Nama Kelas</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        name="name" id="name" value="{{ old('name') }}" placeholder="ex: XI">
+                                        name="name" id="name" value="{{ old('name') }}" placeholder="ex: MIPA 2">
                                     @error('name')
                                         <small class="invalid-feedback">{{ $message }}</small>
                                     @enderror
                                 </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="kelas_level_id">Level Kelas</label>
+                                    <select class="form-control @error('kelas_level_id') is-invalid @enderror"
+                                        name="kelas_level_id" id="kelas_level_id" placeholder="ex: XI">
+                                        <option value="0">-- Select Level Kelas --</option>
+                                        @foreach ($kelasLevel as $kl)
+                                            <option {{ old('kelas_level_id') == $kl->id ? 'selected' : '' }}
+                                                value="{{ $kl->id }}">{{ $kl->level }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('kelas_level_id')
+                                        <small class="invalid-feedback">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="schoolyear_id">Tahun Ajaran</label>
+                                    <select class="form-control @error('schoolyear_id') is-invalid @enderror"
+                                        name="schoolyear_id" id="schoolyear_id" placeholder="ex: XI">
+                                        <option value="0">-- Select School year --</option>
+                                        @foreach ($schoolyear as $kl)
+                                            <option {{ old('schoolyear_id') == $kl->id ? 'selected' : '' }}
+                                                value="{{ $kl->id }}">{{ $kl->start_year }}/{{ $kl->end_year }}
+                                                ({{ $kl->semester_type }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('schoolyear_id')
+                                        <small class="invalid-feedback">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                             </div>
                         </div>
                     </div>

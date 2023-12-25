@@ -63,6 +63,21 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::resource('student', StudentController::class)->except('show');
                 Route::resource('class', KelasController::class)->except('show');
                 // Route::resource('teacher', TeacherController::class);
+
+                Route::get('class/{id}/students', [KelasController::class, 'students'])->name('class.students');
+                Route::get('class/{id}/students/add', [KelasController::class, 'addStudents'])->name('class.students.add');
+                Route::delete('class/{kelasId}/students/{studentId}/remove', [KelasController::class, 'removeStudent'])
+                    ->name('class.students.remove');
+                Route::patch('class/{id}/students/add', [KelasController::class, 'addStudentsAction'])
+                    ->name('class.students.add-action');
+
+                // Imports
+                Route::post('students/import', [StudentController::class, 'import'])
+                    ->name('student.import');
+                Route::post('teachers/import', [TeacherController::class, 'import'])
+                    ->name('teacher.import');
+                Route::post('subjects/import', [SubjectController::class, 'import'])
+                    ->name('subject.import');
             });
         });
         Route::group(['prefix' => '/academics'], function () {

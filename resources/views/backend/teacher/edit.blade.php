@@ -11,7 +11,7 @@
 
             @if (!$teacher->user_id)
                 <div class="alert alert-info">
-                    <p>INFO : Akun ini belum terkait dengan Data Guru
+                    <p>INFO : Data Guru ini belum terkait dengan Akun
                         manapun. Anda bisa mengaitkan akun dengan data guru <a
                             href="{{ route('manage-users.connect-account', $teacher->id) }}"
                             style="text-decoration: underline">disini</a> </p>
