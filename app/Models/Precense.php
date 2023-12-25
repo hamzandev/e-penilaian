@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Precense extends Model
 {
+
     use HasFactory;
+    protected $fillable = ['student_id', 'sick', 'permit', 'absent'];
 
     function student() {
         return $this->belongsTo(Student::class);

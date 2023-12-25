@@ -9,12 +9,13 @@ class Kelas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','schoolyear_id', 'teacher_id', 'kelas_level_id'];
 
     public function student()
     {
         return $this->hasMany(Student::class);
     }
+
 
     public function study()
     {

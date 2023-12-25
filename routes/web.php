@@ -1,6 +1,16 @@
 <?php
 
+
+use App\Http\Controllers\PrecenseController;
+use App\Http\Controllers\BehaviorValueController;
+use App\Http\Controllers\FinalValueController;
+use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\StudyController;
+use App\Http\Controllers\SchoolyearController;
+use App\Http\Controllers\KelasLevelController;
+
 use App\Http\Controllers\AccountsController;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GradeController;
@@ -82,4 +92,14 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
     });
+
+
+    Route::resource('kelas-levels', KelasLevelController::class);
+    Route::resource('schoolyears', SchoolyearController::class);
+    Route::resource('studies', StudyController::class);
+    Route::resource('achievements', AchievementController::class);
+    Route::resource('final_values', FinalValueController::class);
+    Route::resource('behavior_values', BehaviorValueController::class);
+    Route::resource('precenses', PrecenseController::class);
 });
+
