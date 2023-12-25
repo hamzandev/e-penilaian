@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->integer('user_id')->nullable();
             $table->string('nuptk')->unique();
             $table->string('name');
             $table->enum('gender', ['L', 'P']);
             $table->string('dob');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->timestamps();
+
+            // $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
         });
     }
 

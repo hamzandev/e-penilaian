@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class BehaviorValue extends Model
 {
-    protected $table = 'behavior_values';
+    use HasFactory;
     protected $fillable = ['student_id', 'predicate', 'behavior_type', 'description'];
 
-    public function student()
-    {
-      return $this->belongsTo(Student::class, 'student_id');
+    function student() {
+        return $this->belongsTo(Student::class);
     }
 }

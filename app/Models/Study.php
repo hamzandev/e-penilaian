@@ -7,21 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Study extends Model
 {
-    protected $table = 'studies';
+
+    use HasFactory;
+      
     protected $fillable = ['kelas_id', 'subject_id', 'teacher_id', 'standard'];
 
-     public function kelas()
+    function kelas()
     {
-         return $this->belongsTo(Kelas::class, 'kelas_id');
+        return $this->hasOne(Kelas::class);
     }
 
-    public function subject()
+    function subject()
     {
-        return $this->belongsTo(Subject::class, 'subject_id');
+        return $this->hasOne(Subject::class);
     }
 
-    public function teacher()
+    function teacher()
     {
-        return $this->belongsTo(Teacher::class, 'teacher_id');
+        return $this->hasOne(Teacher::class);
     }
 }

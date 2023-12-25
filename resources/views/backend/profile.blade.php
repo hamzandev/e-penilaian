@@ -2,7 +2,10 @@
     <form action="{{ route('profile.update') }}" method="POST" class="card-body">
         @csrf
         @method('PUT')
-        <h2 class="mb-4">Infomasi Akun</h2>
+        <div class="d-flex justify-content-between align-items-baseline">
+            <h2 class="mb-4">Infomasi Akun Saya</h2>
+            <div class="badge text-uppercase bg-success text-white">{{ auth()->user()->role }}</div>
+        </div>
         <div class="row align-items-center">
             <div class="col-auto"><span class="avatar avatar-xl"
                     style="background-image: url({{ Auth::user()->avatar ?? asset('assets/img/avatar.jpg') }})"></span>
@@ -12,7 +15,7 @@
             <div class="col-md-6">
                 <div class="form-label required">Nama Lengkap</div>
                 <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                    value="{{ Auth::user()->name }}">
+                    value="{{ $profile->teacher->name }}">
                 @error('name')
                     <small class="invalid-feedback">{{ $message }}</small>
                 @enderror
@@ -29,12 +32,12 @@
                 <div class="row">
                     <div class="col-md-7">
                         <label class="form-label required" for="dob">Tanggal Lahir</label>
-                        <input value="{{ date('d M Y', strtotime(old('dob') ?? Auth::user()->dob)) }}" type="text"
+                        <input value="{{ date('d M Y', strtotime(old('dob') ?? $profile->teacher->dob)) }}" type="text"
                             class="form-control" readonly>
                     </div>
                     <div class="col-auto">
                         <label for="dob" class="form-label">Edit</label>
-                        <input type="date" value="{{ old('dob') ?? Auth::user()->dob }}" name="dob"
+                        <input type="date"  name="dob"
                             id="dob" class="form-control @error('dob') is-invalid @enderror">
                     </div>
                 </div>
@@ -47,7 +50,7 @@
                 <select class="form-select @error('gender') is-invalid @enderror" name="gender" id="gender">
                     <option value="0" selected="">-- Select Gender --</option>
                     @foreach ($gender as $i => $k)
-                        <option {{ Auth::user()->gender == $k ? 'selected' : '' }} value={{ $k }}>
+                        <option {{ $profile->teacher->gender == $k ? 'selected' : '' }} value={{ $k }}>
                             {{ $k }}</option>
                     @endforeach
                 </select>
@@ -57,7 +60,7 @@
             </div>
             <div class="col">
                 <div class="form-label">Alamat</div>
-                <textarea class="form-control" name="address" id="address" cols="30" rows="5">{{ Auth::user()->address }}</textarea>
+                <textarea class="form-control" name="address" id="address" cols="30" rows="5">{{ $profile->teacher->address }}</textarea>
             </div>
             <h3 class="card-title my-4">Kelola Password</h3>
             <p class="card-subtitle text-info">Kamu tidak perlu mengisi bagian berikut jika hanya ingin mengupdate

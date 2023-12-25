@@ -7,13 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Precense extends Model
 {
-    protected $table = 'precenses';
+
+    use HasFactory;
     protected $fillable = ['student_id', 'sick', 'permit', 'absent'];
 
-    
-    public function student()
-    {
-       return $this->belongsTo(Student::class, 'student_id');
+    function student() {
+        return $this->belongsTo(Student::class);
     }
 }
-

@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class FinalValue extends Model
 {
-    protected $table = 'final_values';
+    use HasFactory;
     protected $fillable = ['student_id', 'knowledge', 'ability', 'pts', 'pas', 'average'];
 
-    public function student()
-    {
-       return $this->belongsTo(Student::class, 'student_id');
+    function student() {
+        return $this->belongsTo(Student::class);
     }
 }

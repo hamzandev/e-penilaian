@@ -5,8 +5,11 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Kelas;
+use App\Models\KelasLevel;
+use App\Models\SchoolYear;
 use App\Models\Student;
 use App\Models\Subject;
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
@@ -19,25 +22,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
-
-       User::create([
-            'name' => 'Admin Namanya',
-            'email' => 'admin@mail.com',
-            'password' => password_hash('admin123', PASSWORD_DEFAULT),
-            'role' => 'admin',
-            'gender' => 'L',
-            'dob' => Date::now(),
-        ]);
-
-        Kelas::create([
-            'name' => 'X'
-        ]);
-        Kelas::create([
-            'name' => 'XI'
-        ]);
-        Kelas::create([
-            'name' => 'XII'
-        ]);
 
         Subject::create([
             'name' => 'Matematika',
@@ -55,6 +39,47 @@ class DatabaseSeeder extends Seeder
             'name' => 'Fani Apriadi',
             'dob' => date('Y-m-d H:m:s'),
             'address' => 'Jalan dulu aja jadian nanti',
+        ]);
+
+        $currentYear = date('Y');
+
+        Schoolyear::create([
+            'start_year' => $currentYear,
+            'end_year' => date('Y', strtotime($currentYear, 1)),
+            'semester_type' => 'gasal',
+        ]);
+
+        KelasLevel::create([
+            'level' => 'X'
+        ]);
+        KelasLevel::create([
+            'level' => 'XI'
+        ]);
+        KelasLevel::create([
+            'level' => 'XII'
+        ]);
+
+        Kelas::create([
+            'name' => 'MIPA 1',
+            'schoolyear_id' => 1,
+            'kelas_level_id' => 2,
+        ]);
+
+        // user
+        $user1 = User::create([
+            'email' => 'admin@mail.com',
+            'password' => password_hash('admin123', PASSWORD_DEFAULT),
+            'role' => 'admin',
+        ]);
+
+        // Teacher
+        Teacher::create([
+            'user_id' => $user1->id,
+            'nuptk' => 1234567890123456,
+            'name' => 'Admin',
+            'gender' => 'L',
+            'dob' =>  date('Y-m-d H:m:s'),
+            'address' =>  'Lorem ipsum dolor sit amet consectetur, adipisicing elit.',
         ]);
     }
 }

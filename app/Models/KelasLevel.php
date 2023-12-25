@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class KelasLevel extends Model
 {
-    protected $table = 'kelas_levels';
+
+    use HasFactory;
     protected $fillable = ['level'];
+
+    function kelas() {
+        return $this->belongsTo(Kelas::class);
+    }
 }

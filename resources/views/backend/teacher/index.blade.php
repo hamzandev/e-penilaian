@@ -1,7 +1,10 @@
 <x-app-layout title="Guru">
     <div class="col-md-7 ">
-        @if (Session::has('message'))
+        @if (Session::has('message') && !Session::has('info'))
             <x-alert type="success" message="{{ Session::get('message') }}" />
+        @elseif(Session::has('info') && Session::has('message'))
+            <x-alert type="success" message="{{ Session::get('message') }}" />
+            <x-alert type="info" message="{{ Session::get('info') }}" />
         @elseif(Session::has('error'))
             <x-alert type="error" message="{{ Session::get('error') }}" />
         @endif
@@ -28,6 +31,7 @@
                                     <th>No.</th>
                                     <th>Nama</th>
                                     <th>NUPTK</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -38,7 +42,13 @@
                                         <td>{{ $k->name }}</td>
                                         <td>{{ $k->nuptk ?? '-' }}</td>
                                         <td>
-                                            <a href="{{ route('master-data.teacher.edit', $k->id) }}" class="badge bg-primary text-white">
+                                            @if ($k->user_id)
+                                                <div class="badge bg-success text-white">Have Account</div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('master-data.teacher.edit', $k->id) }}"
+                                                class="badge bg-primary text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-edit" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -52,10 +62,13 @@
                                                     <path d="M16 5l3 3" />
                                                 </svg>
                                             </a>
-                                            <form style="display: inline;" method="POST" action="{{ route('master-data.teacher.destroy', $k->id) }}">
+                                            <form style="display: inline;" method="POST"
+                                                action="{{ route('master-data.teacher.destroy', $k->id) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button onclick="return confirm('Data akan terhapus secara permanen. Yakin Hapus?')" class="badge bg-danger text-white">
+                                                <button
+                                                    onclick="return confirm('Data akan terhapus secara permanen. Yakin Hapus?')"
+                                                    class="badge bg-danger text-white">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="icon icon-tabler icon-tabler-trash" width="24"
                                                         height="24" viewBox="0 0 24 24" stroke-width="2"

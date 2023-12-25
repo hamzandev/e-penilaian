@@ -1,4 +1,4 @@
-<x-app-layout title="Tambah Pengguna Baru">
+<x-app-layout title="Tambah Pengguna">
     <div class="row mb-5">
         <div class="col-md-8">
             @if (Session::has('message'))
@@ -21,22 +21,11 @@
                         </svg>
                         Cancel
                     </a>
-                    <h2>Buat Pengguna Baru</h2>
+                    <h2>Edit Pengguna</h2>
                 </div>
                 <div class="card-body">
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="name">Nama Lengkap</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        name="name" id="name" value="{{ old('name') ?? $user->name }}"
-                                        placeholder="John Doe">
-                                    @error('name')
-                                        <small class="invalid-feedback">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="email">Email Pengguna</label>
@@ -48,18 +37,31 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="name">Nama Lengkap</label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        name="name" id="name" value="{{ old('name') ?? $user->teacher->name }}"
+                                        placeholder="John Doe">
+                                    @error('name')
+                                        <small class="invalid-feedback">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="col-md-7">
                                 <div class="row align-items-end">
                                     <div class="col-md-7">
                                         <div class="mb-2">
                                             <label class="form-label">Tanggal Lahir</label>
-                                            <input value="{{ date('d/m/Y', strtotime($user->dob)) }}" type="text"
-                                                class="form-control" readonly>
+                                            <input value="{{ date('d M Y', strtotime($user->teacher->dob)) }}"
+                                                type="text" class="form-control" readonly>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="mb-2">
-                                            <label for="dob">Edit</label>
+                                            <label for="dob" class="form-label">Edit</label>
                                             <input type="date" name="dob" id="dob" class="form-control"
                                                 name="dob" id="dob"
                                                 class="form-control @error('dob') is-invalid @enderror">
@@ -75,6 +77,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-5">
                                 <div class="mb-3">
                                     <label class="form-label" for="gender">Jenis Kelamin</label>
@@ -82,7 +85,7 @@
                                         id="gender">
                                         <option value="0" selected="">-- Select Gender --</option>
                                         @foreach ($gender as $i => $k)
-                                            <option {{ $k == $user->gender ? 'selected' : '' }}
+                                            <option {{ $k == $user->teacher->gender ? 'selected' : '' }}
                                                 value={{ $k }}>{{ $k }}</option>
                                         @endforeach
                                     </select>
@@ -91,6 +94,7 @@
                                     @enderror
                                 </div>
                             </div>
+
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="role">Peran Pengguna</label>
@@ -107,10 +111,12 @@
                                     @enderror
                                 </div>
                             </div>
+
+
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="address">Alamat</label>
-                                    <textarea class="form-control" name="address" id="address" rows="3">{{ old('address') ?? $user->address }}</textarea>
+                                    <textarea class="form-control" name="address" id="address" rows="3">{{ old('address') ?? $user->teacher->address }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +124,22 @@
                 </div>
 
                 <div class="card-footer d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary ms-auto">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-delete_user"
+                        class="btn btn-danger me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash-filled"
+                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z"
+                                stroke-width="0" fill="currentColor" />
+                            <path
+                                d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z"
+                                stroke-width="0" fill="currentColor" />
+                        </svg>
+                        Hapus Pengguna
+                    </a>
+                    <button type="submit" class="btn btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check"
                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -132,7 +153,8 @@
         </div>
 
         <div class="col-md-4">
-            <form class="card" action="{{ route('manage-users.update-password', $user->id) }}" method="POST">
+            <form class="card" action="{{ route('manage-users.update-password', $user->teacher->user_id) }}"
+                method="POST">
                 <div class="card-header">
                     Ubah Password Pengguna
                 </div>
@@ -169,19 +191,4 @@
         </div>
     </div>
 
-    {{-- modal show password --}}
-
-    <div class="modal modal-blur fade" id="modal-small" tabindex="-1" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="modal-title">Are you sure?</div>
-                    <div>If you proceed, you will lose all your personal data.</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </x-app-layout>
