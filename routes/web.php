@@ -61,8 +61,13 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::patch('class/{id}/students/add', [KelasController::class, 'addStudentsAction'])
                     ->name('class.students.add-action');
 
+                // Imports
                 Route::post('students/import', [StudentController::class, 'import'])
                     ->name('student.import');
+                Route::post('teachers/import', [TeacherController::class, 'import'])
+                    ->name('teacher.import');
+                Route::post('subjects/import', [SubjectController::class, 'import'])
+                    ->name('subject.import');
             });
         });
         Route::group(['prefix' => '/academics'], function () {

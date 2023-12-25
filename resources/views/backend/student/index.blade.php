@@ -131,6 +131,12 @@
                     <h3>Import Data Siswa dengan file Excel</h3>
                 </div>
                 <div class="modal-body">
+                    <span class="text-info">INFO : Pastikan kamu sudah menyiapkan file excel kamu. Jika kamu belum punya, Silahkan download template Tabel Excel berikut</span>
+                    <div class="mb-4 d-grid">
+                        <a href="{{ asset('assets/excel-templates/template-student.xlsx') }}" class="btn btn-primary" style="width: min-content;">
+                            Download Template
+                        </a>
+                    </div>
                     <div>
                         <div class="my-3">
                             <label for="file_excel" class="form-label">Upload File Excel</label>

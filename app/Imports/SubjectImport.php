@@ -2,41 +2,36 @@
 
 namespace App\Imports;
 
-use App\Models\Student;
+use App\Models\Subject;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-class StudentImport implements ToCollection
+class SubjectImport implements ToCollection
 {
     /**
-     * @param Collection $collection
-     */
+    * @param Collection $collection
+    */
     public function collection(Collection $collection)
     {
-        // return dd($collection[2]);
-        // Student::create();
         $tableFields = iterator_to_array($collection[0]);
-        // return dd($tableFields);
-        $mustHaveField = ['name', 'nisn', 'dob', 'gender', 'address'];
+        $mustHaveField = ['name', 'description'];
         if (array_diff($tableFields, $mustHaveField)) {
             session()->flash('error', 'File yang kamu upload memiliki format data yang salah!');
-            echo '<script>window.location.href = "'.env('APP_URL').'/master-data/student";</script>';
+            echo '<script>window.location.href = "'.env('APP_URL').'/master-data/teacher";</script>';
             return false;
         }
         $data = $this->collectionToArray($tableFields, $collection, true);
         foreach ($data as $row) {
-            $checkDuplicate = Student::select('id')->whereNisn($row['nisn'])->first();
+            $checkDuplicate = Subject::select('id')->whereName($row['name'])->first();
             if ($checkDuplicate) {
-                session()->flash('error', 'File kamu mengandung data NISN yang telah ada di Database!');
-                echo '<script>window.location.href = "'.env('APP_URL').'/master-data/student";</script>';
+                session()->flash('error', 'File kamu mengandung data Mapel yang telah ada di Database!');
+                echo '<script>window.location.href = "'.env('APP_URL').'/master-data/teacher";</script>';
                 return false;
             }
         }
-        Student::insert($data);
-        session()->flash('message', count($data) . ' data Siswa berhasil di import!');
+        Subject::insert($data);
+        session()->flash('message', count($data) . ' data Mapel berhasil di import!');
         return true;
     }
 

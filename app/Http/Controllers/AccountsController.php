@@ -49,7 +49,7 @@ class AccountsController extends Controller
             User::create($data);
             $messageInfo = 'EMAIL : ' . $data['email'] . ' PASSWORD : ' . $password;
 
-            return redirect(route('accounts.index'))->with('message', 'Pengguna baru berhasil dibuat! ' . $messageInfo);
+            return redirect(route('accounts.index'))->with('message', 'Akun baru berhasil dibuat! ' . $messageInfo);
         } catch (\Throwable $th) {
             return redirect(route('accounts.index'))
                 ->with('error', 'Terjadi kesalahan pada sistem. Silahkan coba lagi nanti! ');

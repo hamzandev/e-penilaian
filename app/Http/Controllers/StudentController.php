@@ -114,6 +114,11 @@ class StudentController extends Controller
             'file_excel' => 'required|mimes:xls,xlsx|max:5120'
         ]);
 
+        if (!$request->file('file_excel')) {
+            return redirect(route('master-data.subject.index'))
+                ->with('error', 'Anda harus mengupload file dalam format Excel!');
+        }
+
         Excel::import(new StudentImport(), $request->file('file_excel'));
 
         return redirect(route('master-data.student.index'))->with('message', session('dataCount') . ' data Siswa berhasil di import!');

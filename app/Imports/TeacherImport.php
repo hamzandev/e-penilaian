@@ -2,41 +2,36 @@
 
 namespace App\Imports;
 
-use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-class StudentImport implements ToCollection
+class TeacherImport implements ToCollection
 {
     /**
-     * @param Collection $collection
-     */
+    * @param Collection $collection
+    */
     public function collection(Collection $collection)
     {
-        // return dd($collection[2]);
-        // Student::create();
         $tableFields = iterator_to_array($collection[0]);
-        // return dd($tableFields);
-        $mustHaveField = ['name', 'nisn', 'dob', 'gender', 'address'];
+        $mustHaveField = ['name', 'nuptk', 'dob', 'gender', 'address'];
         if (array_diff($tableFields, $mustHaveField)) {
             session()->flash('error', 'File yang kamu upload memiliki format data yang salah!');
-            echo '<script>window.location.href = "'.env('APP_URL').'/master-data/student";</script>';
+            echo '<script>window.location.href = "'.env('APP_URL').'/master-data/teacher";</script>';
             return false;
         }
         $data = $this->collectionToArray($tableFields, $collection, true);
         foreach ($data as $row) {
-            $checkDuplicate = Student::select('id')->whereNisn($row['nisn'])->first();
+            $checkDuplicate = Teacher::select('id')->whereNuptk($row['nuptk'])->first();
             if ($checkDuplicate) {
-                session()->flash('error', 'File kamu mengandung data NISN yang telah ada di Database!');
-                echo '<script>window.location.href = "'.env('APP_URL').'/master-data/student";</script>';
+                session()->flash('error', 'File kamu mengandung data NUPTK yang telah ada di Database!');
+                echo '<script>window.location.href = "'.env('APP_URL').'/master-data/teacher";</script>';
                 return false;
             }
         }
-        Student::insert($data);
-        session()->flash('message', count($data) . ' data Siswa berhasil di import!');
+        Teacher::insert($data);
+        session()->flash('message', count($data) . ' data Guru berhasil di import!');
         return true;
     }
 

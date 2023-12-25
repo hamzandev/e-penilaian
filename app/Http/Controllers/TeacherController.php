@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\TeacherImport;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
@@ -79,10 +81,6 @@ class TeacherController extends Controller
         }
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Teacher $teacher)
     {
         try {
@@ -96,9 +94,6 @@ class TeacherController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Teacher $teacher)
     {
         $request->validate([
@@ -153,5 +148,22 @@ class TeacherController extends Controller
             return redirect(route('master-data.teacher.index'))
                 ->with('error', 'Kesalahan yang tak terduga telah terjadi. Silahkan coba lagi nanti!');
         }
+    }
+
+
+    function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xls,xlsx|max:5120'
+        ]);
+
+        if (!$request->file('file_excel')) {
+            return redirect(route('master-data.teacher.index'))
+                ->with('error', 'Anda harus mengupload file dalam format Excel!');
+        }
+
+        Excel::import(new TeacherImport(), $request->file('file_excel'));
+
+        return redirect(route('master-data.teacher.index'));
     }
 }

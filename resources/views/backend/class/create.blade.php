@@ -26,7 +26,7 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="name">Nama Kelas</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        name="name" id="name" value="{{ old('name') }}" placeholder="ex: XI">
+                                        name="name" id="name" value="{{ old('name') }}" placeholder="ex: MIPA 2">
                                     @error('name')
                                         <small class="invalid-feedback">{{ $message }}</small>
                                     @enderror

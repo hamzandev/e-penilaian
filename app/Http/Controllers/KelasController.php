@@ -6,6 +6,7 @@ use App\Models\Kelas;
 use App\Models\KelasLevel;
 use App\Models\Schoolyear;
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 
 class KelasController extends Controller
@@ -15,7 +16,7 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $kelas = Kelas::orderBy('name')->get();
+        $kelas = Kelas::with('schoolyear')->with('kelasLevel')->with('teacher')->orderBy('name')->get();
         return view('backend.class.index', compact('kelas'));
     }
 
@@ -30,6 +31,9 @@ class KelasController extends Controller
     {
         $request->validate([
             'name' => 'required|unique:kelas',
+            'schoolyear_id' => 'required|numeric|not_in:0',
+            'teacher_id' => 'nullable|numeric|not_in:0',
+            'kelas_level_id' => 'required|numeric|not_in:0',
         ]);
         Kelas::create($request->except('_token'));
         return redirect(route('master-data.class.index'))->with('message', 'Kelas baru berhasil ditambahkan!');
@@ -39,8 +43,11 @@ class KelasController extends Controller
 
     public function edit($id)
     {
+        $schoolyear = Schoolyear::all();
+        $kelasLevel = KelasLevel::all();
+        $teacher = Teacher::all();
         $kelas = Kelas::find($id);
-        return view('backend.class.edit', compact('kelas'));
+        return view('backend.class.edit', compact('kelas', 'schoolyear', 'kelasLevel', 'teacher'));
     }
 
 
@@ -48,6 +55,9 @@ class KelasController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'kelas_level_id' => 'required|numeric|not_in:0',
+            'schoolyear_id' => 'required|numeric|not_in:0',
+            'teacher_id' => 'nullable|numeric',
         ]);
 
         try {
@@ -64,9 +74,14 @@ class KelasController extends Controller
                 }
             }
 
-            $kelas->update([
-                'name' => $request->post('name'),
-            ]);
+            $kelas->name = $request->name;
+            $kelas->kelas_level_id = $request->kelas_level_id;
+            $kelas->schoolyear_id = $request->schoolyear_id;
+            if ($request->teacher_id) {
+                $kelas->teacher_id = $request->teacher_id;
+            }
+
+            $kelas->save();
 
             return redirect(route('master-data.class.index'))
                 ->with('message', 'Data kelas ' . $request->name . ' berhasil diperbarui!');
