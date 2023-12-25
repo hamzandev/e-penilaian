@@ -1,5 +1,5 @@
 <x-app-layout title="Guru">
-    <div class="col-md-7 ">
+    <div class="col-md-8">
         @if (Session::has('message') && !Session::has('info'))
             <x-alert type="success" message="{{ Session::get('message') }}" />
         @elseif(Session::has('info') && Session::has('message'))
@@ -39,7 +39,7 @@
                                 @foreach ($teacher as $i => $k)
                                     <tr>
                                         <td>{{ ++$i }}</td>
-                                        <td>{{ $k->name }}</td>
+                                        <td>{{ $k->name }} @if($k->id == auth()->user()->id) <i class="text-secondary">(Anda)</i> @endif</td>
                                         <td>{{ $k->nuptk ?? '-' }}</td>
                                         <td>
                                             @if ($k->user_id)

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\KelasLevel;
+use App\Models\Schoolyear;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class KelasController extends Controller
@@ -16,17 +19,13 @@ class KelasController extends Controller
         return view('backend.class.index', compact('kelas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('backend.class.create');
+        $schoolyear = Schoolyear::all();
+        $kelasLevel = KelasLevel::all();
+        return view('backend.class.create', compact('schoolyear', 'kelasLevel'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -37,18 +36,14 @@ class KelasController extends Controller
     }
 
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit($id)
     {
         $kelas = Kelas::find($id);
         return view('backend.class.edit', compact('kelas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -91,5 +86,59 @@ class KelasController extends Controller
 
         $find->delete();
         return redirect(route('master-data.class.index'))->with('message', 'Data kelas berhasil dihapus!');
+    }
+
+    function students($id)
+    {
+        $studentsOfClass = Kelas::with('student')->where('id', $id)->first();
+        return view('backend.class.students', compact('studentsOfClass'));
+    }
+
+    function addStudents($id)
+    {
+        $studentsNoClass = Student::whereNull('kelas_id')->get();
+        return view('backend.class.add-students', compact('studentsNoClass', 'id'));
+    }
+
+    function addStudentsAction(Request $request, $id)
+    {
+        $data = $request->except(['_token', '_method', 'datatable_length', 'student_0']);
+        if (!$data) {
+            return redirect(route('master-data.class.students.add', $id))
+                ->with('info', 'INFO : Tdak ada data Siswa yang anda pilih!');
+        }
+        $checkKelas = Kelas::select('id', 'name')->find($id);
+        if (!$checkKelas) {
+            return redirect(route('master-data.class.students'))
+                ->with('error', 'Data kelas yang anda tuju tidak ditemukan!');
+        }
+        $student = new Student();
+        foreach ($data as $i => $row) {
+            $s = $student->select('id')->find($row);
+            if ($s) {
+                $s->kelas_id = $id;
+                $s->save();
+            }
+        }
+
+        return redirect(route('master-data.class.students', $id))
+            ->with('message', count($data) . ' Siswa telah berhasil ditambahkan ke kelas ', $checkKelas->name);
+    }
+
+    function removeStudent($kelasId, $studentId)
+    {
+        $findStudent = Student::select('id', 'kelas_id', 'nisn')
+            ->with('kelas')
+            ->orWhere('kelas_id', $kelasId)
+            ->find($studentId);
+        if (!$findStudent) {
+            return redirect(route('master-data.class.students'))
+                ->with('error', 'Data Siswa yang anda tuju tidak ditemukan!');
+        }
+        $findStudent->kelas_id = null;
+        $findStudent->save();
+
+        return redirect(route('master-data.class.students', $kelasId))
+            ->with('message', 'Siswa ' . $findStudent->nisn . ' telah berhasil ditambahkan dari kelas ' . $findStudent->kelas->name,);
     }
 }
