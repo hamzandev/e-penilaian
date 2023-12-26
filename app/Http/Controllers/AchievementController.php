@@ -63,4 +63,5 @@ class AchievementController extends Controller
 
         return redirect()->route('achievements.index')->with('success', 'Achievement deleted successfully');
     }
+
 }

@@ -14,4 +14,5 @@ class KelasLevel extends Model
     function kelas() {
         return $this->belongsTo(Kelas::class);
     }
+
 }

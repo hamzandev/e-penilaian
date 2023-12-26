@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FinalValue extends Model
 {
     use HasFactory;
+
     protected $fillable = ['student_id', 'knowledge', 'ability', 'pts', 'pas', 'average'];
 
     function student() {

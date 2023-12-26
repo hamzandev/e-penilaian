@@ -62,4 +62,5 @@ class SchoolyearController extends Controller
 
         return redirect()->route('schoolyears.index')->with('success', 'School Year deleted successfully');
     }
+
 }

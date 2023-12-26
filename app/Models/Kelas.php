@@ -16,7 +16,6 @@ class Kelas extends Model
         return $this->hasMany(Student::class);
     }
 
-
     public function study()
     {
         return $this->hasMany(Study::class);
@@ -37,4 +36,5 @@ class Kelas extends Model
     {
         return $this->belongsTo(KelasLevel::class);
     }
+
 }

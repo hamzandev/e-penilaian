@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Achievement extends Model
 {
     use HasFactory;
+
     protected $fillable = ['student_id', 'type', 'description'];
 
     function student() {
         return $this->belongsTo(Student::class);
     }
+
 }

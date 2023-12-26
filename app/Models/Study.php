@@ -26,4 +26,5 @@ class Study extends Model
     {
         return $this->hasOne(Teacher::class);
     }
+
 }
