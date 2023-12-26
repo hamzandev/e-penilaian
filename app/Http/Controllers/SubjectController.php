@@ -2,14 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\SubjectImport;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    function import(Request $request) {
+        $request->validate([
+            'file_excel' => 'required|mimes:xls,xlsx|max:5120'
+        ]);
+
+        if (!$request->file('file_excel')) {
+            return redirect(route('master-data.subject.index'))
+                ->with('error', 'Anda harus mengupload file dalam format Excel!');
+        }
+
+        Excel::import(new SubjectImport(), $request->file('file_excel'));
+
+        return redirect(route('master-data.subject.index'));
+    }
+
     public function index()
     {
         $subject = Subject::orderBy('name')->get();

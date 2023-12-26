@@ -1,6 +1,6 @@
 <x-app-layout title="Edit Siswa">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-9">
             @if (Session::has('message'))
                 <x-alert type="success" message="{{ Session::get('message') }}" />
             @elseif(Session::has('error'))
@@ -63,7 +63,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label" for="gender">Jenis Kelamin</label>
                                     <select class="form-select @error('gender') is-invalid @enderror" name="gender"
@@ -79,14 +79,30 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="dob">Tanggal Lahir</label>
-                                    <input type="date" value="{{ old('dob') ?? $student->dob }}" name="dob"
-                                        id="dob" class="form-control @error('dob') is-invalid @enderror">
-                                    @error('dob')
-                                        <small class="invalid-feedback">{{ $message }}</small>
-                                    @enderror
+                            <div class="col-md-5">
+                                <div class="row align-items-end">
+                                    <div class="col-md-7">
+                                        <div class="mb-2">
+                                            <label class="form-label">Tanggal Lahir</label>
+                                            <input value="{{ date('d M Y', strtotime($student->dob)) }}"
+                                                type="text" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="mb-2">
+                                            <label for="dob" class="form-label">Edit</label>
+                                            <input type="date" name="dob" id="dob" class="form-control"
+                                                name="dob" id="dob"
+                                                class="form-control @error('dob') is-invalid @enderror">
+                                            @error('dob')
+                                                <small class="invalid-feedback">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-info mb-3 d-block">Anda dapat mengubah Tanggal Lahir
+                                            pengguna. Biarkan input ini kosong jika tidak ingin mengubah</small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">

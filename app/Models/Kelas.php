@@ -16,10 +16,6 @@ class Kelas extends Model
         return $this->hasMany(Student::class);
     }
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     public function study()
     {
         return $this->hasMany(Study::class);
@@ -40,8 +36,5 @@ class Kelas extends Model
     {
         return $this->belongsTo(KelasLevel::class);
     }
-<<<<<<< Updated upstream
+
 }
-=======
-}
->>>>>>> Stashed changes

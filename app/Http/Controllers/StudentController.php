@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\StudentImport;
 use App\Models\Kelas;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -57,9 +60,6 @@ class StudentController extends Controller
         return view('backend.student.edit', compact('student', 'kelas', 'gender'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Student $student)
     {
         $request->validate([
@@ -67,7 +67,7 @@ class StudentController extends Controller
             'kelas_id' => 'required|numeric|not_in:0',
             'nisn' => 'required|digits:10|numeric',
             'gender' => 'required|in:L,P',
-            'dob' => 'required|date|before_or_equal:today',
+            'dob' => 'nullable|date|before_or_equal:today',
         ]);
 
         if (!$student) {
@@ -81,11 +81,20 @@ class StudentController extends Controller
                     ->with('error', 'NISN yang diinputkan telah terdaftar. Silahkan gunakan NISN lain!');
             }
         }
-        $student->update($request->except(['_token', '_method']));
+        // $student->update($request->except(['_token', '_method']));
+        $student->name = $request->name;
+        $student->nisn = $request->nisn;
+        $student->gender = $request->gender;
+        $student->kelas_id = $request->kelas_id;
+        if ($request->dob) {
+            $student->dob = $request->dob;
+        }
+        $student->address = $request->address;
+        $student->save();
+
         return redirect(route('master-data.student.edit', $student->id))
             ->with('message', 'Data siswa ' . $student->nisn . ' berhasil diperbarui!');
     }
-
 
     public function destroy($id)
     {
@@ -97,5 +106,21 @@ class StudentController extends Controller
         $find->delete();
         return redirect(route('master-data.student.index'))
             ->with('message', 'Data siswa ' . $find->nisn . ' berhasil dihapus!');
+    }
+
+    function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xls,xlsx|max:5120'
+        ]);
+
+        if (!$request->file('file_excel')) {
+            return redirect(route('master-data.subject.index'))
+                ->with('error', 'Anda harus mengupload file dalam format Excel!');
+        }
+
+        Excel::import(new StudentImport(), $request->file('file_excel'));
+
+        return redirect(route('master-data.student.index'))->with('message', session('dataCount') . ' data Siswa berhasil di import!');
     }
 }

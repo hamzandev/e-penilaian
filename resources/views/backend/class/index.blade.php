@@ -1,5 +1,5 @@
 <x-app-layout title="Kelas">
-    <div class="col-md-7 ">
+    <div class="col-md-10">
         @if (Session::has('message'))
             <x-alert type="success" message="{{ Session::get('message') }}" />
         @elseif(Session::has('error'))
@@ -26,7 +26,10 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Kelas</th>
+                                    <th>Nama</th>
+                                    <th>Level Kelas</th>
+                                    <th>Wali Kelas</th>
+                                    <th>Tahun Ajaran (Semester)</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -35,8 +38,13 @@
                                     <tr>
                                         <td>{{ ++$i }}</td>
                                         <td>{{ $k->name }}</td>
+                                        <td>{{ $k->kelasLevel->level }}</td>
+                                        <td>{{ $k->teacher->name ?? '-' }}</td>
+                                        <td>{{ $k->schoolyear->start_year }}/{{ $k->schoolyear->end_year }}
+                                            ({{ $k->schoolyear->semester_type }})</td>
                                         <td>
-                                            <a href="{{ route('master-data.class.edit', $k->id) }}" class="badge bg-primary text-white">
+                                            <a href="{{ route('master-data.class.edit', $k->id) }}"
+                                                class="badge bg-primary text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-edit" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -50,10 +58,13 @@
                                                     <path d="M16 5l3 3" />
                                                 </svg>
                                             </a>
-                                            <form style="display: inline;" method="POST" action="{{ route('master-data.class.destroy', $k->id) }}">
+                                            <form style="display: inline;" method="POST"
+                                                action="{{ route('master-data.class.destroy', $k->id) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button onclick="return confirm('Data akan terhapus secara permanen. Yakin Hapus?')" class="badge bg-danger text-white">
+                                                <button
+                                                    onclick="return confirm('Data akan terhapus secara permanen. Yakin Hapus?')"
+                                                    class="badge bg-danger text-white">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="icon icon-tabler icon-tabler-trash" width="24"
                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -68,6 +79,20 @@
                                                     </svg>
                                                 </button>
                                             </form>
+                                            <a href="{{ route('master-data.class.students', $k->id) }}"
+                                                class="badge bg-secondary text-white">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="icon icon-tabler icon-tabler-users" width="24"
+                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                    stroke="currentColor" fill="none" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                                                </svg>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

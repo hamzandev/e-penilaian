@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
 
         Schoolyear::create([
             'start_year' => $currentYear,
-            'end_year' => date('Y', strtotime($currentYear, 1)),
+            'end_year' => date('Y', strtotime('2024')),
             'semester_type' => 'gasal',
         ]);
 

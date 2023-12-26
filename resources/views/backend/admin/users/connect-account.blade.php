@@ -49,6 +49,11 @@
                             <small class="text-red">{{ $message }}</small>
                         @enderror
                     </div>
+                    <div class="my-3">
+                        <p class="text-secondary">
+                            Tidak ada akun yang tersedia? Buat <a href="{{ route('accounts.create') }}" class="text-decoration-underline">disini</a>
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>

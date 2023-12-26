@@ -7,14 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Study extends Model
 {
-<<<<<<< Updated upstream
-    use HasFactory;
-=======
 
     use HasFactory;
       
     protected $fillable = ['kelas_id', 'subject_id', 'teacher_id', 'standard'];
->>>>>>> Stashed changes
 
     function kelas()
     {
@@ -30,8 +26,5 @@ class Study extends Model
     {
         return $this->hasOne(Teacher::class);
     }
-<<<<<<< Updated upstream
+
 }
-=======
-}
->>>>>>> Stashed changes
