@@ -23,15 +23,6 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        Subject::create([
-            'name' => 'Matematika',
-            'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'
-        ]);
-        Subject::create([
-            'name' => 'Bahasa Inggrid',
-            'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'
-        ]);
-
         Student::create([
             'kelas_id' => 1,
             'nisn' => 1234567890,
@@ -45,7 +36,7 @@ class DatabaseSeeder extends Seeder
 
         Schoolyear::create([
             'start_year' => $currentYear,
-            'end_year' => date('Y', strtotime('2024')),
+            'end_year' => 2024,
             'semester_type' => 'gasal',
         ]);
 
@@ -73,13 +64,23 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Teacher
-        Teacher::create([
+        $guru = Teacher::create([
             'user_id' => $user1->id,
             'nuptk' => 1234567890123456,
             'name' => 'Admin',
             'gender' => 'L',
             'dob' =>  date('Y-m-d H:m:s'),
             'address' =>  'Lorem ipsum dolor sit amet consectetur, adipisicing elit.',
+        ]);
+
+        Subject::create([
+            'name' => 'Matematika',
+            'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            'teacher_id' => $guru->id,
+        ]);
+        Subject::create([
+            'name' => 'Bahasa Inggrid',
+            'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'
         ]);
     }
 }

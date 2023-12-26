@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Imports\SubjectImport;
 use App\Models\Subject;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SubjectController extends Controller
 {
 
-    function import(Request $request) {
+    function import(Request $request)
+    {
         $request->validate([
             'file_excel' => 'required|mimes:xls,xlsx|max:5120'
         ]);
@@ -27,7 +29,7 @@ class SubjectController extends Controller
 
     public function index()
     {
-        $subject = Subject::orderBy('name')->get();
+        $subject = Subject::with('teacher')->orderBy('name')->get();
         return view('backend.subject.index', compact('subject'));
     }
 
@@ -36,7 +38,8 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view('backend.subject.create');
+        $teachers = Teacher::orderBy('name')->get();
+        return view('backend.subject.create', compact('teachers'));
     }
 
     public function store(Request $request)
@@ -51,7 +54,8 @@ class SubjectController extends Controller
 
     public function edit(Subject $subject)
     {
-        return view('backend.subject.edit', compact('subject'));
+        $teachers = Teacher::orderBy('name')->get();
+        return view('backend.subject.edit', compact('subject', 'teachers'));
     }
 
     /**
@@ -60,18 +64,35 @@ class SubjectController extends Controller
     public function update(Request $request, Subject $subject)
     {
         $request->validate([
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'teacher_id' => 'required|numeric|not_in:0',
         ]);
 
         if ($request->name != $subject->name) {
-            $check = Subject::select('name')->whereName($request->name);
+            $check = Subject::select('name')
+                ->whereName($request->name)
+                ->first();
+
             if ($check) {
                 return redirect(route('master-data.subject.edit', $subject->id))
                     ->with('error', 'Mata Pelajaran ' . $request->name . ' telah ada. Gunakan mata pelajaran lain!');
             }
         }
+        // if ($request->teacher_id != $request->teacher_id) {
+        //     $checkTeacher = Subject::select('teacher_id')
+        //         ->whereTeacherId($request->teacher_id)
+        //         ->first();
 
-        $subject->update($request->except(['_token', '_method']));
+        //     if ($checkTeacher) {
+        //         return redirect(route('master-data.subject.edit', $subject->id))
+        //             ->with('error', 'Maaf telah ada. Gunakan mata pelajaran lain!');
+        //     }
+        // }
+
+        $subject->name = $request->name;
+        $subject->teacher_id = $request->teacher_id;
+        $subject->save();
+
         return redirect(route('master-data.subject.index'))
             ->with('message', 'Mata Pelajaran ' . $subject->name . '  berhasil diperbarui menjadi ' . $request->name);
     }

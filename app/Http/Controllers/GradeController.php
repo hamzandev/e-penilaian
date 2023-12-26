@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Grade;
 use App\Models\Kelas;
 use App\Models\Student;
+use App\Models\Subject;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class GradeController extends Controller
      */
     public function index()
     {
-        $grade = Grade::with(['studect', 'teacher', 'subject'])->get();
+        $grade = Grade::with(['student', 'teacher', 'subject'])->get();
         // return dd($grade);
         return view('backend.grade.index', compact('grade'));
     }
@@ -27,7 +28,7 @@ class GradeController extends Controller
     {
         $student = Student::select('id', 'name', 'nisn')->get();
         $teacher = Teacher::select('id', 'name', 'nuptk')->get();
-        $kelas = Kelas::select('id', 'name')->get();
+        $kelas = Subject::select('id', 'name')->get();
         return view('backend.grade.create', compact('kelas', 'teacher', 'student'));
     }
 
@@ -36,7 +37,14 @@ class GradeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return dd($request->all());
+        Grade::create($request->except('_token'));
+        // return redirect(route('master-data.subject.index'))
+        // ->with('error', 'Anda harus mengupload file dalam format Excel!');
+        $mapel = Subject::select('name')->find($request->post('subject_id'));
+        $student = Student::select('name')->find($request->post('student_id'));
+        return redirect(route('academics.grades.index'))
+            ->with('message', 'Data nilai ' . $mapel->name . ' Siswa ' . $student->name . ' berhasil diinput!');
     }
 
     /**

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('pts');
             $table->float('pas');
             $table->float('average');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

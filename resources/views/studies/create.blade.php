@@ -17,18 +17,18 @@
                         </svg>
                         Cancel
                     </a>
-                    <h2>Input Nilai Siswa & Mapel</h2>
+                    <h2>Tambah Pembelajaran</h2>
                 </div>
                 <div class="card-body">
                     <div class="modal-body">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-5">
                                 <div class="mb-3">
                                     <label class="form-label" for="subject_id">Mapel</label>
                                     <select class="form-select @error('subject_id') is-invalid @enderror" name="subject_id"
                                         id="subject_id">
                                         <option value="0" selected="">-- Select Mapel --</option>
-                                        @foreach ($kelas as $i => $k)
+                                        @foreach ($subject as $i => $k)
                                             <option {{ $k->id == old('subject_id') ? 'selected' : '' }}
                                                 value={{ $k->id }}>{{ $k->name }}</option>
                                         @endforeach
@@ -92,7 +92,7 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end">

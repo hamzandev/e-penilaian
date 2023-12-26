@@ -20,6 +20,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\WalikelasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,19 +58,45 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['middleware' => 'role:admin,operator'], function () {
-        Route::group(['prefix' => '/master-data'], function () {
-            Route::name('master-data.')->group(function () {
+        // Academics
+        Route::group(['prefix' => '/academics'], function () {
+            Route::name('academics.')->group(function () {
+                Route::resource('grades', GradeController::class);
+            });
+        });
+    });
+
+
+    Route::group(['middleware' => 'role:operator'], function () {
+        Route::prefix('/wali-kelas')->name('wali-kelas.')->group(function () {
+            Route::get('/my-classes', [WalikelasController::class, 'index'])->name('my-classes');
+            Route::get('/{kelasId}/students/{teacherId}', [WalikelasController::class, 'classDetail'])->name('students');
+            Route::get('/studies', [WalikelasController::class, 'studies'])->name('studies');
+        });
+        Route::resource('studies', StudyController::class)->only(['index', 'create', 'store']);
+        Route::resource('achievements', AchievementController::class);
+        Route::resource('final-values', FinalValueController::class);
+        Route::resource('behavior_values', BehaviorValueController::class);
+        Route::resource('precenses', PrecenseController::class);
+        Route::resource('studies', StudyController::class)->except(['create', 'store']);
+    });
+
+
+    Route::group(['middleware' => 'role:admin'], function () {
+        // master data
+        Route::prefix('/master-data')
+            ->name('master-data.')
+            ->group(function () {
                 Route::resource('subject', SubjectController::class)->except('show');
-                Route::resource('student', StudentController::class)->except('show');
                 Route::resource('class', KelasController::class)->except('show');
-                // Route::resource('teacher', TeacherController::class);
+                Route::resource('student', StudentController::class)->except('show');
 
                 Route::get('class/{id}/students', [KelasController::class, 'students'])->name('class.students');
                 Route::get('class/{id}/students/add', [KelasController::class, 'addStudents'])->name('class.students.add');
-                Route::delete('class/{kelasId}/students/{studentId}/remove', [KelasController::class, 'removeStudent'])
-                    ->name('class.students.remove');
                 Route::patch('class/{id}/students/add', [KelasController::class, 'addStudentsAction'])
                     ->name('class.students.add-action');
+                Route::delete('class/{kelasId}/students/{studentId}/remove', [KelasController::class, 'removeStudent'])
+                    ->name('class.students.remove');
 
                 // Imports
                 Route::post('students/import', [StudentController::class, 'import'])
@@ -79,42 +106,31 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('subjects/import', [SubjectController::class, 'import'])
                     ->name('subject.import');
             });
+
+        // controller resources => master data
+        Route::name('master-data.')->prefix('/master-data')->group(function () {
+            Route::resource('teacher', TeacherController::class);
+            Route::resource('kelas-levels', KelasLevelController::class);
+            Route::resource('schoolyears', SchoolyearController::class);
         });
-        Route::group(['prefix' => '/academics'], function () {
-            Route::name('academics.')->group(function () {
-                Route::resource('grade', GradeController::class);
+
+        // controllers Users for Manage Users
+        Route::resource('manage-users', UsersController::class)->except(['create', 'show', 'destroy']);
+        Route::prefix('/manage-users')
+            ->controller(UsersController::class)
+            ->name('manage-users.')
+            ->group(function () {
+                Route::get('/{id}/connect-account', 'connectAccount')
+                    ->name('connect-account');
+                Route::patch('/{id}/connect-account', 'connect')
+                    ->name('connect-account-action');
+                Route::patch('/{id}/update-password', 'updatePassword')
+                    ->name('update-password');
             });
-        });
-    });
 
-    Route::group(['middleware' => 'role:admin'], function () {
-        Route::get('/manage-users/{id}/connect-account', [UsersController::class, 'connectAccount'])
-            ->name('manage-users.connect-account');
-        Route::patch('/manage-users/{id}/connect-account', [UsersController::class, 'connect'])
-            ->name('manage-users.connect-account-action');
-
+        // controllers Accounts
+        Route::resource('accounts', AccountsController::class);
         Route::patch('/accounts/{id}/update-password', [AccountsController::class, 'updatePassword'])
             ->name('accounts.update-password');
-
-        Route::patch('/manage-users/{id}/update-password', [UsersController::class, 'updatePassword'])
-            ->name('manage-users.update-password');
-
-        Route::resource('manage-users', UsersController::class)->except(['create', 'show', 'destroy']);
-        Route::resource('accounts', AccountsController::class);
-
-        Route::name('master-data.')->prefix('/master-data')->group(function() {
-            Route::resource('teacher', TeacherController::class);
-        });
-
     });
-
-
-    Route::resource('kelas-levels', KelasLevelController::class);
-    Route::resource('schoolyears', SchoolyearController::class);
-    Route::resource('studies', StudyController::class);
-    Route::resource('achievements', AchievementController::class);
-    Route::resource('final_values', FinalValueController::class);
-    Route::resource('behavior_values', BehaviorValueController::class);
-    Route::resource('precenses', PrecenseController::class);
 });
-

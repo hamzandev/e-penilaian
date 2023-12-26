@@ -9,6 +9,8 @@ class Grade extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['student_id','teacher_id', 'subject_id', 'value', 'weight'];
+
     public function student()
     {
         return $this->belongsTo(Student::class);

@@ -1,4 +1,4 @@
-<x-app-layout title="Grade">
+<x-app-layout title="Data Pembelajaran">
     <div class="col-md-10">
         @if (Session::has('message'))
             <x-alert type="success" message="{{ Session::get('message') }}" />
@@ -10,7 +10,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-baseline">
-                        <h1>Grade</h1>
+                        <h1>Data Pembelajaran (Final Values)</h1>
                         <a href="{{ route('academics.grades.create') }}" class="btn btn-primary"><svg
                                 xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus"
                                 width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -28,14 +28,16 @@
                                     <th>No.</th>
                                     <th>Nama Siswa</th>
                                     <th>NISN</th>
-                                    <th>Mapel</th>
-                                    <th>Guru Mapel</th>
-                                    <th>Bobot Mapel</th>
-                                    <th>Nilai Siswa</th>
+                                    <th>Nilai Pengetahuan</th>
+                                    <th>Nilai Keterampilan</th>
+                                    <th>Nilai PTS</th>
+                                    <th>Nilai PAS</th>
+                                    <th>Rata-Rata</th>
+                                    <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {{-- <tbody>
                                 @foreach ($grade as $i => $k)
                                     <tr>{{ json_encode($k) }}</tr>
                                     <tr>
@@ -83,7 +85,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody>
+                            </tbody> --}}
                         </table>
                     </div>
                 </div>

@@ -49,7 +49,7 @@ class StudentImport implements ToCollection
             for ($j = 0; $j < count($tableFields); $j++) {
                 if ($hasDate == true) {
                     if ($j == 3) {
-                        $field = $this->intToDate($collection[$i][$j]);
+                        $field = $this->intToDate(intval($collection[$i][$j]));
                     } else {
                         $field = $collection[$i][$j];
                     }
