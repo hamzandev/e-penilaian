@@ -23,6 +23,7 @@ class Roles
         if ($request->user() && in_array($request->user()->role, $roles)) {
             return $next($request);
         }
-        return redirect(route('dashboard'))->with('error', 'Unauthorized action!');
+        // return redirect(route('dashboard'))->with('error', 'Unauthorized action!');
+        return abort(403, 'FORBIDDEN');
     }
 }

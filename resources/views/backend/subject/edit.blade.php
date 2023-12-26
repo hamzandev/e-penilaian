@@ -39,6 +39,19 @@
                                         <small class="invalid-feedback">{{ $message }}</small>
                                     @enderror
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label required" for="teacher_id">Guru Pengampu</label>
+                                    <select name="teacher_id" id="teacher_id" value="{{ old('teacher_id') }}"
+                                        class="form-control @error('teacher_id') is-invalid @enderror">
+                                        <option value="0">-- Select Teacher --</option>
+                                        @foreach ($teachers as $key => $t)
+                                            <option {{ old('teacher_id') ?? $subject->teacher_id == $t->id ? 'selected' : '' }} value="{{ $t->id }}">{{ $t->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('teacher_id')
+                                        <small class="invalid-feedback">{{ $message }}</small>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="col-12">
                                 <div class="mb-3">

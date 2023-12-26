@@ -18,4 +18,8 @@ class Subject extends Model
     function study() {
         return $this->hasMany(Study::class);
     }
+
+    function teacher() {
+        return $this->belongsTo(Teacher::class);
+    }
 }

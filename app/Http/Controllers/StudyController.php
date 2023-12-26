@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Study;
 use App\Models\Kelas;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
@@ -12,17 +13,21 @@ class StudyController extends Controller
 {
     public function index()
     {
-        $studies = Study::all();
+        $studies = Study::with('kelas')->with('subject')->with('teacher')->get();
         return view('studies.index', compact('studies'));
     }
 
     public function create()
     {
-        $kelasList = Kelas::pluck('name', 'id');
-        $subjectList = Subject::pluck('name', 'id');
-        $teacherList = Teacher::pluck('name', 'id');
+        // $kelasList = Kelas::pluck('name', 'id');
+        // $subjectList = Subject::pluck('name', 'id');
+        // $teacherList = Teacher::pluck('name', 'id');
 
-        return view('studies.create', compact('kelasList', 'subjectList', 'teacherList'));
+        $student = Student::pluck('id', 'name', 'nisn');
+        $teacher = Teacher::pluck('id', 'name', 'nuptk');
+        $subject = Subject::pluck('id', 'name');
+        $kelas = Kelas::with('teacher')->get();
+        return view('studies.create', compact('student', 'teacher', 'kelas'));
     }
 
     public function store(Request $request)

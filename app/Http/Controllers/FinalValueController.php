@@ -10,14 +10,14 @@ class FinalValueController extends Controller
 {
     public function index()
     {
-        $finalValues = FinalValue::all();
-        return view('final_values.index', compact('finalValues'));
+        $finalValues = FinalValue::with('student')->get();
+        return view('final-values.index', compact('finalValues'));
     }
 
     public function create()
     {
         $students = Student::pluck('name', 'id');
-        return view('final_values.create', compact('students'));
+        return view('final-values.create', compact('students'));
     }
 
     public function store(Request $request)
@@ -33,18 +33,18 @@ class FinalValueController extends Controller
 
         FinalValue::create($request->all());
 
-        return redirect()->route('final_values.index')->with('success', 'Final Value created successfully');
+        return redirect()->route('final-values.index')->with('success', 'Final Value created successfully');
     }
 
     public function show(FinalValue $finalValue)
     {
-        return view('final_values.show', compact('finalValue'));
+        return view('final-values.show', compact('finalValue'));
     }
 
     public function edit(FinalValue $finalValue)
     {
         $students = Student::pluck('name', 'id');
-        return view('final_values.edit', compact('finalValue', 'students'));
+        return view('final-values.edit', compact('finalValue', 'students'));
     }
 
     public function update(Request $request, FinalValue $finalValue)
@@ -60,13 +60,13 @@ class FinalValueController extends Controller
 
         $finalValue->update($request->all());
 
-        return redirect()->route('final_values.index')->with('success', 'Final Value updated successfully');
+        return redirect()->route('final-values.index')->with('success', 'Final Value updated successfully');
     }
 
     public function destroy(FinalValue $finalValue)
     {
         $finalValue->delete();
 
-        return redirect()->route('final_values.index')->with('success', 'Final Value deleted successfully');
+        return redirect()->route('final-values.index')->with('success', 'Final Value deleted successfully');
     }
 }

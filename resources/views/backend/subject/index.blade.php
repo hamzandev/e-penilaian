@@ -44,6 +44,7 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>Nama</th>
+                                    <th>Guru Pengampu</th>
                                     <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -53,6 +54,13 @@
                                     <tr>
                                         <td>{{ ++$i }}</td>
                                         <td>{{ $k->name }}</td>
+                                        <td>
+                                            @if ($k->teacher)
+                                                {{ $k->teacher->name }}
+                                                @else
+                                                <i class="text-secondary">Belum Ditetapkan</i>
+                                            @endif
+                                        </td>
                                         <td>{{ $k->description ?? '-' }}</td>
                                         <td>
                                             <a href="{{ route('master-data.subject.edit', $k->id) }}"
@@ -105,7 +113,7 @@
     {{-- Modal import file --}}
     <div class="modal modal-blur fade" id="import-subject" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-        <form method="POST" enctype="multipart/form-data" action="{{ route('master-data.subject.import') }}"
+            <form method="POST" enctype="multipart/form-data" action="{{ route('master-data.subject.import') }}"
                 class="modal-content">
                 @csrf
                 <div class="modal-header">
