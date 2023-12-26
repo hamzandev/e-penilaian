@@ -9,13 +9,17 @@ class Kelas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','schoolyear_id', 'teacher_id', 'kelas_level_id'];
 
     public function student()
     {
         return $this->hasMany(Student::class);
     }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     public function study()
     {
         return $this->hasMany(Study::class);
@@ -36,4 +40,8 @@ class Kelas extends Model
     {
         return $this->belongsTo(KelasLevel::class);
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
