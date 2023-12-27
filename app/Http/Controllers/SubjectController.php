@@ -65,6 +65,7 @@ class SubjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'standard' => 'required|numeric',
             'teacher_id' => 'required|numeric|not_in:0',
         ]);
 
@@ -78,19 +79,10 @@ class SubjectController extends Controller
                     ->with('error', 'Mata Pelajaran ' . $request->name . ' telah ada. Gunakan mata pelajaran lain!');
             }
         }
-        // if ($request->teacher_id != $request->teacher_id) {
-        //     $checkTeacher = Subject::select('teacher_id')
-        //         ->whereTeacherId($request->teacher_id)
-        //         ->first();
-
-        //     if ($checkTeacher) {
-        //         return redirect(route('master-data.subject.edit', $subject->id))
-        //             ->with('error', 'Maaf telah ada. Gunakan mata pelajaran lain!');
-        //     }
-        // }
 
         $subject->name = $request->name;
         $subject->teacher_id = $request->teacher_id;
+        $subject->standard = $request->standard;
         $subject->save();
 
         return redirect(route('master-data.subject.index'))

@@ -26,26 +26,22 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Nama Siswa</th>
-                                    <th>NISN</th>
-                                    <th>Nilai Pengetahuan</th>
-                                    <th>Nilai Keterampilan</th>
-                                    <th>Wali Penilaian Siswa</th>
-                                    <th>Tahun Ajaran (Semester)</th>
+                                    <th>Nama Kelas</th>
+                                    <th>Wali Kelas</th>
+                                    <th>Tahun Ajaran</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($finalValues as $i => $k)
+                                @foreach ($data as $i => $k)
                                     <tr>
                                         <td>{{ ++$i }}</td>
                                         <td>{{ $k->name }}</td>
-                                        <td>{{ $k->Penilaian SiswaLevel->level }}</td>
-                                        <td>{{ $k->teacher->name ?? '-' }}</td>
+                                        <td>{{ $k->teacher->name }}</td>
                                         <td>{{ $k->schoolyear->start_year }}/{{ $k->schoolyear->end_year }}
                                             ({{ $k->schoolyear->semester_type }})</td>
                                         <td>
-                                            <a href="{{ route('master-data.class.edit', $k->id) }}"
+                                            <a href="{{ route('final-values.show', $k->id) }}"
                                                 class="badge bg-primary text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-edit" width="24"
@@ -58,41 +54,6 @@
                                                     <path
                                                         d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
                                                     <path d="M16 5l3 3" />
-                                                </svg>
-                                            </a>
-                                            <form style="display: inline;" method="POST"
-                                                action="{{ route('master-data.class.destroy', $k->id) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button
-                                                    onclick="return confirm('Data akan terhapus secara permanen. Yakin Hapus?')"
-                                                    class="badge bg-danger text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="icon icon-tabler icon-tabler-trash" width="24"
-                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                        stroke="currentColor" fill="none" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                        <path d="M4 7l16 0" />
-                                                        <path d="M10 11l0 6" />
-                                                        <path d="M14 11l0 6" />
-                                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                            <a href="{{ route('master-data.class.students', $k->id) }}"
-                                                class="badge bg-secondary text-white">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-users" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                                                 </svg>
                                             </a>
                                         </td>

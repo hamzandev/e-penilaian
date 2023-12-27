@@ -21,7 +21,7 @@
                                 <path d="M12 9v6" />
                             </svg>Tambah Grade</a>
                     </div>
-                    <div class="card-body">
+                    {{-- <div class="card-body">
                         <table id="datatable" class="table card-table table-striped">
                             <thead>
                                 <tr>
@@ -46,7 +46,6 @@
                                         <td>{{ $k->teacher->name }}</td>
                                         <td>{{ $k->weight }}</td>
                                         <td>{{ $k->value }}</td>
-                                        <td>{{ $k->address }}</td>
                                         <td>
                                             <a href="{{ route('academics.grades.edit', $k->id) }}" class="badge bg-primary text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +84,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

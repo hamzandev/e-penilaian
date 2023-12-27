@@ -10,7 +10,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-baseline">
-                        <h1>Data Pembelajaran (Detail Study)</h1>
+                        <h1>Data Pembelajaran</h1>
                         <a href="{{ route('studies.create') }}" class="btn btn-primary"><svg
                                 xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus"
                                 width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -35,55 +35,38 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            {{-- <tbody>
-                                @foreach ($grade as $i => $k)
-                                    <tr>{{ json_encode($k) }}</tr>
+                            <tbody>
+                                @foreach ($studies as $i => $value)
+                                    {{ $value }}
                                     <tr>
                                         <td>{{ ++$i }}</td>
-                                        <td>{{ $k->student->name }}</td>
-                                        <td>{{ $k->student->nisn }}</td>
-                                        <td>{{ $k->subject->name }}</td>
-                                        <td>{{ $k->teacher->name }}</td>
-                                        <td>{{ $k->weight }}</td>
-                                        <td>{{ $k->value }}</td>
-                                        <td>{{ $k->address }}</td>
+                                        <td>{{ $value->name }}</td>
+                                        <td>{{ $value->teacher->kelas->kelasLevel->level }} -
+                                            {{ $value->teacher->kelas->name }}</td>
+                                        <td>{{ $value->teacher->name }}</td>
+                                        <td>{{ $value->standard ?? '-' }}</td>
                                         <td>
-                                            <a href="{{ route('academics.grades.edit', $k->id) }}" class="badge bg-primary text-white">
+                                            <a href="{{ route('studies.show', $value->id) }}"
+                                                class="badge bg-orange text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-edit" width="24"
+                                                    class="icon icon-tabler icon-tabler-list-letters" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
                                                     stroke="currentColor" fill="none" stroke-linecap="round"
                                                     stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M11 6h9" />
+                                                    <path d="M11 12h9" />
+                                                    <path d="M11 18h9" />
+                                                    <path d="M4 10v-4.5a1.5 1.5 0 0 1 3 0v4.5" />
+                                                    <path d="M4 8h3" />
                                                     <path
-                                                        d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                    <path
-                                                        d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                    <path d="M16 5l3 3" />
+                                                        d="M4 20h1.5a1.5 1.5 0 0 0 0 -3h-1.5h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6z" />
                                                 </svg>
                                             </a>
-                                            <form style="d-inline" method="POST" action="{{ route('academics.grades.destroy', $k->id) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button onclick="return confirm('Data ini akan dihapus permanen. Yakin Hapus?')" type="submit" class="badge bg-danger text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="icon icon-tabler icon-tabler-trash" width="24"
-                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                        stroke="currentColor" fill="none" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                        <path d="M4 7l16 0" />
-                                                        <path d="M10 11l0 6" />
-                                                        <path d="M14 11l0 6" />
-                                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                                    </svg>
-                                                </button>
-                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody> --}}
+                            </tbody>
                         </table>
                     </div>
                 </div>

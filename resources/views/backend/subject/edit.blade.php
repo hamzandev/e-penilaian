@@ -52,6 +52,15 @@
                                         <small class="invalid-feedback">{{ $message }}</small>
                                     @enderror
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label required" for="standard">KKM (standard)</label>
+                                    <input type="text" class="form-control @error('standard') is-invalid @enderror"
+                                        name="standard" id="standard" value="{{ old('standard') ?? $subject->standard }}"
+                                        placeholder="ex: XI">
+                                    @error('standard')
+                                        <small class="invalid-feedback">{{ $message }}</small>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="col-12">
                                 <div class="mb-3">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FinalValue;
+use App\Models\Kelas;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -10,15 +11,18 @@ class FinalValueController extends Controller
 {
     public function index()
     {
-        $finalValues = FinalValue::with('student')->get();
-        return view('final-values.index', compact('finalValues'));
+        $data = Kelas::with('schoolyear')->whereHas('teacher', function($q) {
+            $q->whereId(auth()->user()->id);
+        })->get();
+        // return dd($data);
+        return view('final-values.index', compact('data'));
     }
 
-    public function create()
-    {
-        $students = Student::pluck('name', 'id');
-        return view('final-values.create', compact('students'));
-    }
+    // public function create()
+    // {
+    //     $students = Student::pluck('name', 'id');
+    //     return view('final-values.create', compact('students'));
+    // }
 
     public function store(Request $request)
     {
