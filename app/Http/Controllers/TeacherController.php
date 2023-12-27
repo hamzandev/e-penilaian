@@ -118,6 +118,7 @@ class TeacherController extends Controller
                 $teacher->dob = $request->dob;
             }
             $teacher->gender = $request->gender;
+            $teacher->address = $request->address;
             $teacher->save();
 
             return redirect(route('master-data.teacher.edit', $teacher->id))

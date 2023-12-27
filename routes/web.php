@@ -71,14 +71,23 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('/wali-kelas')->name('wali-kelas.')->group(function () {
             Route::get('/my-classes', [WalikelasController::class, 'index'])->name('my-classes');
             Route::get('/{kelasId}/students/{teacherId}', [WalikelasController::class, 'classDetail'])->name('students');
+            Route::get(
+                '/{kelasId}/students/{teacherId}/siswa-detail/{studentId}',
+                [WalikelasController::class, 'studentDetail']
+            )->name('students.detail');
+            Route::patch(
+                '/{kelasId}/students/{teacherId}/siswa-detail/{studentId}',
+                [WalikelasController::class, 'studentDetailAction']
+            )->name('students.detail-action');
             Route::get('/studies', [WalikelasController::class, 'studies'])->name('studies');
         });
-        Route::resource('studies', StudyController::class)->only(['index', 'create', 'store']);
+        Route::resource('studies', StudyController::class);
+
         Route::resource('achievements', AchievementController::class);
         Route::resource('final-values', FinalValueController::class);
         Route::resource('behavior_values', BehaviorValueController::class);
         Route::resource('precenses', PrecenseController::class);
-        Route::resource('studies', StudyController::class)->except(['create', 'store']);
+        // Route::resource('studies', StudyController::class)->except(['create', 'store']);
     });
 
 

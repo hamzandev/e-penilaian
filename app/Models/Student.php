@@ -25,7 +25,7 @@ class Student extends Model
         return $this->hasMany(Attendance::class);
     }
 
-    public function grades()
+    public function grade()
     {
         return $this->hasMany(Grade::class);
     }
@@ -37,7 +37,7 @@ class Student extends Model
 
     public function finalValue()
     {
-        return $this->hasMany(FinalValue::class);
+        return $this->hasOne(FinalValue::class);
     }
 
     public function behaviorValue()

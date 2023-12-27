@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Grade;
 use App\Models\Kelas;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
@@ -10,6 +12,50 @@ use Illuminate\Http\Request;
 
 class WalikelasController extends Controller
 {
+
+    function studentDetail($kelasId, $teacherId, $studentId)
+    {
+        $data = Student::whereHas('kelas', function ($query) use ($kelasId, $teacherId) {
+            $query->whereHas('teacher', function ($q) use ($teacherId) {
+                $q->where('id', $teacherId);
+            })->whereKelasId($kelasId);
+        })->find($studentId);
+
+        $subjects = Subject::select('id', 'name')->get();
+        $values = Grade::whereStudentId($studentId)->get();
+        // return dd($data);
+
+        return view('backend.wali-kelas.students-detail', compact('data', 'subjects', 'values'));
+        // $grades =
+    }
+
+    function studentDetailAction(Request $request, $kelasId, $teacherId, $studentId)
+    {
+        // $data = Student::whereHas('kelas', function ($query) use ($kelasId) {
+        //     $query->whereKelasId($kelasId);
+        // })->find($studentId);
+        $inputs = ($request->except(['_token', '_method', 'datatable_length']));
+        $keys = array_keys($inputs);
+        $data = array_values($inputs);
+        // return dd($data);
+        foreach ($keys as $i => $key) {
+            Grade::whereId($key)->updateOrCreate([
+                'student_id' => $studentId,
+                'teacher_id' => $teacherId,
+                'subject_id' => $key,
+                'value' => $data[$i],
+            ]);
+        }
+
+        return redirect(route('wali-kelas.students', [$kelasId, $teacherId]))
+            ->with('message', 'Nilai siswa berhasil di Simpan!');
+
+        // $subjects = Subject::select('id', 'name')->get();
+        // $values = Grade::whereStudentId($studentId)->get();
+
+        // return view('backend.wali-kelas.students-detail', compact('data', 'subjects', 'values'));
+        // $grades =
+    }
 
     function index()
     {
@@ -34,12 +80,14 @@ class WalikelasController extends Controller
         return view('backend.wali-kelas.students', compact('studentsOfClass'));
     }
 
-    function studies() {
+    function studies()
+    {
         // $data = Subject::
         return view('backend.wali-kelas.studies');
     }
 
-    function studyDetail($subjectId) {
+    function studyDetail($subjectId)
+    {
         return view('backend.wali-kelas.study-detail');
     }
 
