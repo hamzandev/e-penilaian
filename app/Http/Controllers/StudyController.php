@@ -42,75 +42,41 @@ class StudyController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'kelas_id' => 'required|integer',
-        //     'subject_id' => 'required|integer',
-        //     'teacher_id' => 'required|integer',
-        //     'standard' => 'required|integer',
-        // ]);
 
-        // Study::create($request->all());
+        $request->validate([
+            'knowledge.*' => 'required|numeric',
+            'ability.*' => 'required|numeric',
+            'pts.*' => 'required|numeric',
+            'pas.*' => 'required|numeric',
+            'description.*' => 'nullable|string',
+        ]);
 
-        // return redirect()->route('studies.index')->with('success', 'Study created successfully');
-        // return dd();
-        $data = $request->except(['_token', 'datatable_length']);
+        $knowledge = $request->input('knowledge');
+        $ability = $request->input('ability');
+        $pts = $request->input('pts');
+        $pas = $request->input('pas');
+        $description = $request->input('description');
 
-        // Loop melalui data siswa dari form
+        foreach ($knowledge as $i => $knowledgeValue) {
+            // Lakukan penyimpanan ke database per baris
+            $study = FinalValue::updateOrCreate([
+                'student_id' => $request->input('student_id')[$i],
+            ], [
+                'knowledge' => $knowledgeValue,
+                'ability' => $ability[$i],
+                'pts' => $pts[$i],
+                'pas' => $pas[$i],
+                'average' => intval(intval($knowledge) + intval($pts[$i]) + intval($pas[$i]) + intval($ability[$i])) / 4,
+            ]);
 
-        // return (dd($data));
-        $inputArray = [
-            "knowledge2" => "8",
-            "ability2" => "8",
-            "pts2" => "8",
-            "pas2" => "8",
-            "description2" => "989",
-            "student_id1" => "1",
-            "knowledge1" => "8",
-            "ability1" => "8",
-            "pts1" => "8",
-            "pas1" => "8",
-            "description1" => "8",
-            "student_id3" => "3",
-            "knowledge3" => "8",
-            "ability3" => "8",
-            "pts3" => "8",
-            "pas3" => "8",
-            "description3" => "8",
-        ];
+            $average = ($knowledgeValue + $ability[$i] + $pts[$i] + $pas[$i]) / 4;
 
-        $newArrays = [];
-        $currentStudentId = null;
-
-        foreach ($inputArray as $key => $value) {
-            preg_match('/^(\w+)(\d+)$/', $key, $matches);
-
-            if (count($matches) == 3) {
-                $field = $matches[1];
-                $studentId = $matches[2];
-
-                // Memulai array baru jika student_id berubah
-                if ($studentId != $currentStudentId) {
-                    $currentStudentId = $studentId;
-                    $newArrays[$currentStudentId] = [];
-                }
-
-                // Menambahkan data ke dalam array baru
-                $newArrays[$currentStudentId][$field] = $value;
-            }
+            $study->description = $description[$i];
+            $study->average = $average;
+            $study->save();
         }
 
-        // Menghapus elemen array yang memiliki index numerik
-        $newArrays = array_filter($newArrays, function ($key) {
-            return is_numeric($key); // Sesuaikan dengan kebutuhan Anda
-        }, ARRAY_FILTER_USE_KEY);
-
-        // Reindex array
-        $newArrays = array_values($newArrays);
-
-        // Cetak hasil
-        print_r($newArrays);
-
-        // FinalValue
+        return redirect()->back();
     }
 
     public function show($id)

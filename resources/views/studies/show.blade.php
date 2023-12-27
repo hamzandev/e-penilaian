@@ -7,22 +7,78 @@
         @endif
 
         <div class="row">
+            <div class="col mb-3">
+                <a href="#" class="btn btn-outline-danger">Back</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mb-3">
+                <div class="alert alert-info bg shadow alert-lg">
+                    <table cellpadding="5">
+                        <tr>
+                            <td>
+                                <h2>Mata Pelajaran</h2>
+                            </td>
+                            <td>
+                                <h2> : </h2>
+                            </td>
+                            <td>
+                                <h2>{{ $data->name }}</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="text-secondary">Kelas</span>
+                            </td>
+                            <td>
+                                <span class="text-secondary"> : </span>
+                            </td>
+                            <td>
+                                <span class="text-secondary">{{ $data->teacher->kelas->kelasLevel->level }} - {{ $data->teacher->kelas->name }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="text-secondary">KKM (Standard)</span>
+                            </td>
+                            <td>
+                                <span class="text-secondary"> : </span>
+                            </td>
+                            <td>
+                                <span class="text-secondary">{{ $data->standard }} </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="text-secondary">Guru Pengampu</span>
+                            </td>
+                            <td>
+                                <span class="text-secondary"> : </span>
+                            </td>
+                            <td>
+                                <span class="text-secondary">{{ $data->teacher->name }} </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="text-secondary">Tahun Ajaran</span>
+                            </td>
+                            <td>
+                                <span class="text-secondary"> : </span>
+                            </td>
+                            <td>
+                                <span class="text-secondary text-uppercase">{{ $data->teacher->kelas->schoolyear->start_year }}/{{ $data->teacher->kelas->schoolyear->start_year }} ({{ $data->teacher->kelas->schoolyear->semester_type }}) </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-baseline">
-                        <h1>Data Pembelajaran</h1>
-                        <a href="{{ route('studies.create') }}" class="btn btn-primary"><svg
-                                xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus"
-                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                                <path d="M9 12h6" />
-                                <path d="M12 9v6" />
-                            </svg>
-                            Tambah Grade
-                        </a>
-                    </div>
                     <form action="{{ route('studies.store', $data->id) }}" method="POST" class="card-body">
                         @csrf
                         <div class="table-responsive">
@@ -41,32 +97,41 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data->teacher->kelas->student as $i => $value)
-                                        {{-- {{ $value->finalValue }} --}}
+                                        {{-- {{ $value->finalValue->description }} --}}
                                         <tr>
                                             <td>{{ $value->nisn }}</td>
                                             <td>{{ $value->name }}</td>
                                             <td>
-                                                {{-- <input type="hidden" name="student_id{{ $value->id }}" value="{{ $value->id }}"> --}}
-                                                <input type="number" name="knowledge{{ $value->id }}"
+                                                <input type="hidden" value="{{ $value->id }}"
+                                                    name="student_id[{{ $i }}]">
+                                                <input type="number"
+                                                    value="{{ old('knowledge.' . $value->id) ?? $value->finalValue->knowledge }}"
+                                                    name="knowledge[{{ $i }}]"
                                                     class="form-control form-control-sm">
                                             </td>
                                             <td>
-                                                <input type="number" name="ability{{ $value->id }}"
+                                                <input type="number"
+                                                    value={{ old('ability.' . $value->id) ?? $value->finalValue->ability }}
+                                                    name="ability[{{ $i }}]"
                                                     class="form-control form-control-sm">
                                             </td>
                                             <td>
-                                                <input type="number" name="pts{{ $value->id }}"
+                                                <input type="number"
+                                                    value="{{ old('pts.' . $value->id) ?? $value->finalValue->pts }}"
+                                                    name="pts[{{ $i }}]"
                                                     class="form-control form-control-sm">
                                             </td>
                                             <td>
-                                                <input type="number" name="pas{{ $value->id }}"
+                                                <input type="number"
+                                                    value="{{ old('pas.' . $value->id) ?? $value->finalValue->pas }}"
+                                                    name="pas[{{ $i }}]"
                                                     class="form-control form-control-sm">
                                             </td>
                                             <td>
-                                                {{ ($value->finalValue?->knowledge + $value->finalValue?->ability + $value->finalValue?->pas + $value->finalValue?->pts) / 4 ?? '-' }}
+                                                {{ $value->finalValue->average ?? '0' }}
                                             </td>
                                             <td>
-                                                <textarea name="description{{ $value->id }}" id="description" cols="40" rows="3" class="form-control"></textarea>
+                                                <textarea name="description[{{ $i }}]" id="description" cols="40" rows="3" class="form-control">{{ old('description.' . $value->id) ?? $value->finalValue->description }}</textarea>
                                             </td>
                                         </tr>
                                     @endforeach
