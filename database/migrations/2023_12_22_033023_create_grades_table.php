@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('teacher_id');
             $table->integer('subject_id');
             $table->double('value');
-            $table->double('weight');
             $table->timestamps();
         });
     }
